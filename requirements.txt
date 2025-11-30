@@ -6,3 +6,4 @@ matplotlib
 shap
 jupyter
 xgboost
+seaborn
