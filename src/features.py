@@ -23,10 +23,53 @@ def _parse_timestamp(value: Optional[str]) -> Optional[pd.Timestamp]:
     return ts if pd.notnull(ts) else None
 
 
+def _extract_token_ids(tokens_field) -> List[str]:
+    """
+    Normalize clobTokenIds into a list of clean token id strings.
+    Handles stringified lists and nested lists.
+    """
+    tokens: List[str] = []
+
+    def clean(s: str) -> str:
+        return s.strip().strip('[]"\' ').replace(" ", "")
+
+    if isinstance(tokens_field, str):
+        stripped = tokens_field.strip().strip("[]")
+        parts = stripped.split(",")
+        tokens.extend([clean(p) for p in parts if clean(p)])
+    elif isinstance(tokens_field, (list, tuple)):
+        for item in tokens_field:
+            if isinstance(item, str):
+                tokens.append(clean(item))
+            elif isinstance(item, (list, tuple)) and item:
+                inner = item[0]
+                if isinstance(inner, str):
+                    tokens.append(clean(inner))
+    tokens = [t for t in tokens if t]
+    return tokens
+
+
+def _fallback_price_from_market(market: Dict) -> Optional[float]:
+    """
+    Try to derive a last price from market metadata if history is empty.
+    Uses outcomePrices or lastTradePrice if available.
+    """
+    prices = market.get("outcomePrices") or market.get("outcome_prices")
+    if isinstance(prices, (list, tuple)) and prices:
+        try:
+            return float(prices[0])
+        except Exception:
+            return None
+    ltp = market.get("lastTradePrice")
+    try:
+        return float(ltp) if ltp is not None else None
+    except Exception:
+        return None
+
+
 def _extract_label(market: Dict) -> Optional[int]:
     """
-    Try to extract a binary resolved label from common Polymarket fields.
-    Returns 1 for YES, 0 for NO, or None if not found.
+    Extract a binary label. Tries common outcome fields; falls back to lastTradePrice heuristic if market is closed.
     """
     keys = [
         "winningOutcome",
@@ -52,50 +95,13 @@ def _extract_label(market: Dict) -> Optional[int]:
                     return 1
                 if outcome_clean in {"no", "n", "0", "false"}:
                     return 0
-    # TODO: adjust if actual schema exposes a different resolved field.
-    return None
 
-
-def _extract_token_id(tokens_field) -> Optional[str]:
-    """
-    Extract a token id from clobTokenIds which may be a list, nested, or stringified.
-    """
-    candidates: List[str] = []
-
-    if isinstance(tokens_field, str):
-        try:
-            parsed = ast.literal_eval(tokens_field)
-            tokens_field = parsed
-        except Exception:
-            stripped = tokens_field.strip().strip('[]"\'')
-            parts = [p.strip().strip('[]"\'') for p in stripped.split(",")]
-            candidates.extend(parts)
-
-    if isinstance(tokens_field, (list, tuple)):
-        for item in tokens_field:
-            if isinstance(item, str):
-                candidates.append(item.strip().strip('[]"\''))
-            elif isinstance(item, (list, tuple)) and item:
-                inner = item[0]
-                if isinstance(inner, str):
-                    candidates.append(inner.strip().strip('[]"\''))
-    for c in candidates:
-        if c and c not in {"[", "]", '"', "'"}:
-            return c
-    return None
-
-
-def _fallback_price_from_market(market: Dict) -> Optional[float]:
-    """
-    Try to derive a last price from market metadata if history is empty.
-    Uses outcomePrices first element if available.
-    """
-    prices = market.get("outcomePrices") or market.get("outcome_prices")
-    if isinstance(prices, (list, tuple)) and prices:
-        try:
-            return float(prices[0])
-        except Exception:
-            return None
+    # Fallback: if market is closed, use lastTradePrice heuristic as a proxy label.
+    if market.get("closed") is True:
+        ltp = _fallback_price_from_market(market)
+        if ltp is not None:
+            return 1 if ltp >= 0.5 else 0
+    # TODO: replace heuristic with actual resolved outcome when available in the payload.
     return None
 
 
@@ -103,13 +109,11 @@ def compute_market_features(
     market: Dict,
     history_df: pd.DataFrame,
     snapshot_offset_days: int = 3,
-    min_history_points: int = 0,
+    min_history_points: int = 1,
 ) -> Optional[Dict]:
     """
     Compute snapshot features for a single market using its price history and metadata.
-
     Returns a feature dict including target 'y', or None if not enough data/label.
-    If there is insufficient history, falls back to metadata price (outcomePrices) when possible.
     """
     df = history_df.copy()
     if "timestamp" not in df.columns and "t" in df.columns:
@@ -117,7 +121,6 @@ def compute_market_features(
     if "price" not in df.columns and "p" in df.columns:
         df = df.rename(columns={"p": "price"})
 
-    # Parse times
     df["timestamp"] = pd.to_datetime(df.get("timestamp"), utc=True, errors="coerce")
     df = df.dropna(subset=["timestamp"])
 
@@ -134,10 +137,7 @@ def compute_market_features(
     df = df[df["timestamp"] <= snapshot_time].sort_values("timestamp")
 
     if "price" not in df.columns or df.empty or len(df) < min_history_points:
-        fallback_price = _fallback_price_from_market(market)
-        if fallback_price is None:
-            return None
-        last_price = fallback_price
+        last_price = _fallback_price_from_market(market)
         ma_7d = np.nan
         vol_7d = np.nan
         vol_30d = np.nan
@@ -165,7 +165,6 @@ def compute_market_features(
 
     return {
         "market_id": market.get("id"),
-        "snapshot_offset_days": snapshot_offset_days,
         "last_price": last_price,
         "ma_7d": ma_7d,
         "price_trend_7d": price_trend_7d,
@@ -180,15 +179,11 @@ def compute_market_features(
 
 def build_training_dataset(
     markets: List[Dict],
-    snapshot_offsets: Sequence[int] = (3, 7, 14),
+    snapshot_offset_days: int = 3,
     max_markets: Optional[int] = None,
-    min_history_points: int = 0,
+    min_history_points: int = 1,
     verbose: bool = False,
 ) -> pd.DataFrame:
-    """
-    Build a training DataFrame by fetching histories, computing features, and assembling rows.
-    Generates multiple snapshots per market to expand the dataset.
-    """
     rows: List[Dict] = []
     to_iterate = markets[:max_markets] if max_markets else markets
 
@@ -196,30 +191,35 @@ def build_training_dataset(
     skipped_label = 0
 
     for market in to_iterate:
-        token_id = _extract_token_id(market.get("clobTokenIds"))
-        if not token_id:
+        token_ids = _extract_token_ids(market.get("clobTokenIds"))
+        if not token_ids:
             skipped_no_token += 1
             continue
 
-        history = fetch_price_history(token_id=token_id, interval="all", fidelity=60)
-        history_df = price_history_to_dataframe(history)
-
-        for offset in snapshot_offsets:
+        # Try tokens until one yields features
+        feats_row = None
+        for tok in token_ids:
+            history = fetch_price_history(tok, interval="all", fidelity=60)
+            hdf = price_history_to_dataframe(history)
             feats = compute_market_features(
                 market=market,
-                history_df=history_df,
-                snapshot_offset_days=offset,
+                history_df=hdf,
+                snapshot_offset_days=snapshot_offset_days,
                 min_history_points=min_history_points,
             )
             if feats is not None:
-                rows.append(feats)
-            else:
-                skipped_label += 1
+                feats_row = feats
+                break
+
+        if feats_row is not None:
+            rows.append(feats_row)
+        else:
+            skipped_label += 1
 
     if verbose:
         print(
-            f"Processed markets: {len(to_iterate)}, rows kept: {len(rows)}, "
-            f"no_token: {skipped_no_token}, skipped_no_label_or_data: {skipped_label}"
+            f"Processed markets: {len(to_iterate)}, kept rows: {len(rows)}, "
+            f"no_token: {skipped_no_token}, no_label_or_data: {skipped_label}"
         )
 
     return pd.DataFrame(rows)
@@ -229,15 +229,13 @@ def save_training_dataset_to_csv(
     df: pd.DataFrame,
     path: str = "data/processed/training_data.csv",
 ) -> None:
-    """Save the training DataFrame to CSV, creating parent directories if needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     df.to_csv(path, index=False)
 
 
 if __name__ == "__main__":
-    # Smoke test: fetch markets, build dataset, inspect, and save.
     print("Fetching resolved markets...")
-    markets = fetch_resolved_markets(max_markets=1200, page_size=200, sleep_s=0.05)
+    markets = fetch_resolved_markets(max_markets=300, page_size=100, sleep_s=0.2)
     print(f"Fetched {len(markets)} markets.")
     _mdf = markets_to_dataframe(markets)
     if not _mdf.empty:
@@ -247,9 +245,9 @@ if __name__ == "__main__":
     print("\nBuilding training dataset...")
     df = build_training_dataset(
         markets=markets,
-        snapshot_offsets=(3, 7, 14),
+        snapshot_offset_days=3,
         max_markets=None,
-        min_history_points=0,  # allow metadata fallback
+        min_history_points=1,
         verbose=True,
     )
     print(f"Training DataFrame shape: {df.shape}")

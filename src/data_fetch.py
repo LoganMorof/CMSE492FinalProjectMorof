@@ -60,6 +60,7 @@ def fetch_markets_page(
     url = f"{GAMMA_BASE_URL}/markets"
     try:
         resp = requests.get(url, params=params, timeout=timeout)
+        print(f"[debug] markets page status={resp.status_code} params={params}")
         resp.raise_for_status()
         data = resp.json()
         if isinstance(data, list):
@@ -82,9 +83,14 @@ def fetch_resolved_markets(
     """
     Page through resolved markets from Gamma until max_markets or empty page.
     start_offset lets you skip older markets to reach newer CLOB-backed ones.
+    Defaults to ordering by volume24hrClob desc and enableOrderBook=true to prefer liquid CLOB markets.
     """
     if extra_params is None:
-        extra_params = {"enableOrderBook": "true"}
+        extra_params = {
+            "enableOrderBook": "true",
+            "order": "volume24hrClob",
+            "ascending": "false",
+        }
     markets: List[Dict] = []
     offset = start_offset
     while len(markets) < max_markets:
@@ -106,7 +112,7 @@ def _cache_path(token_id: str) -> str:
 
 def fetch_price_history(
     token_id: str,
-    interval: Optional[str] = None,
+    interval: str = "all",
     fidelity: int = 60,
     timeout: int = 10,
     sleep_s: float = 0.2,
@@ -116,7 +122,7 @@ def fetch_price_history(
 ) -> List[Dict]:
     """
     Fetch price history for a token from CLOB with caching and gentle retries.
-    A time component is always provided: use interval if given, otherwise startTs/endTs.
+    Defaults to interval='all'. If interval is None, uses a fallback window sequence.
     """
     os.makedirs(HISTORY_CACHE_DIR, exist_ok=True)
     cache_file = _cache_path(token_id)
@@ -132,47 +138,73 @@ def fetch_price_history(
             print(f"Warning: failed to read cache for {token_id}: {exc}")
 
     now = int(time.time())
-    if start_ts is None:
-        start_ts = 0  # full range; adjust if you want a shorter window
     if end_ts is None:
         end_ts = now
-
-    params = {"market": token_id, "fidelity": fidelity}
-    if interval:
-        params["interval"] = interval
-    else:
-        params["startTs"] = start_ts
-        params["endTs"] = end_ts
-
     url = f"{CLOB_BASE_URL}/prices-history"
     backoff = sleep_s if sleep_s > 0 else 0.1
 
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.get(url, params=params, timeout=timeout)
-            print(f"[debug] price-history {token_id} -> {resp.status_code}")
-            if resp.status_code == 429:
-                print(f"Rate limited on token {token_id}; attempt {attempt}/{max_retries}")
+    # If interval is provided (default 'all'), try that first
+    if interval:
+        params = {"market": token_id, "interval": interval, "fidelity": fidelity}
+        for attempt in range(1, max_retries + 1):
+            try:
+                resp = requests.get(url, params=params, timeout=timeout)
+                print(f"[debug] price-history {token_id} interval={interval} -> {resp.status_code}")
+                if resp.status_code == 429:
+                    time.sleep(backoff)
+                    backoff *= 2
+                    continue
+                resp.raise_for_status()
+                data = resp.json()
+                history = data.get("history", [])
+                if not isinstance(history, list):
+                    history = []
+                try:
+                    with open(cache_file, "w", encoding="utf-8") as f:
+                        json.dump(data, f)
+                except Exception as exc:
+                    print(f"Warning: failed to write cache for {token_id}: {exc}")
+                if sleep_s > 0:
+                    time.sleep(sleep_s)
+                return history
+            except Exception as exc:
+                print(f"Warning: price history (interval) failed for {token_id} (attempt {attempt}): {exc}")
                 time.sleep(backoff)
                 backoff *= 2
-                continue
-            resp.raise_for_status()
-            data = resp.json()
-            history = data.get("history", [])
-            if not isinstance(history, list):
-                history = []
+
+    # Fallback: try shrinking start/end windows if interval was None or failed
+    window_days_sequence = [30, 7, 1]
+    for days in window_days_sequence:
+        win_start = start_ts if start_ts is not None else end_ts - days * 86400
+        params = {"market": token_id, "fidelity": fidelity, "startTs": win_start, "endTs": end_ts}
+        for attempt in range(1, max_retries + 1):
             try:
-                with open(cache_file, "w", encoding="utf-8") as f:
-                    json.dump(data, f)
+                resp = requests.get(url, params=params, timeout=timeout)
+                print(f"[debug] price-history {token_id} days={days} -> {resp.status_code}")
+                if resp.status_code == 429:
+                    time.sleep(backoff)
+                    backoff *= 2
+                    continue
+                if resp.status_code == 400 and "interval is too long" in resp.text:
+                    break  # shrink window
+                resp.raise_for_status()
+                data = resp.json()
+                history = data.get("history", [])
+                if not isinstance(history, list):
+                    history = []
+                try:
+                    with open(cache_file, "w", encoding="utf-8") as f:
+                        json.dump(data, f)
+                except Exception as exc:
+                    print(f"Warning: failed to write cache for {token_id}: {exc}")
+                if sleep_s > 0:
+                    time.sleep(sleep_s)
+                return history
             except Exception as exc:
-                print(f"Warning: failed to write cache for {token_id}: {exc}")
-            if sleep_s > 0:
-                time.sleep(sleep_s)
-            return history
-        except Exception as exc:
-            print(f"Warning: failed to fetch price history for {token_id} (attempt {attempt}): {exc}")
-            time.sleep(backoff)
-            backoff *= 2
+                print(f"Warning: failed (days={days}) for {token_id} (attempt {attempt}): {exc}")
+                time.sleep(backoff)
+                backoff *= 2
+        # try next shorter window
     return []
 
 
@@ -200,14 +232,10 @@ def price_history_to_dataframe(history: List[Dict]) -> pd.DataFrame:
 def find_first_history(
     markets: List[Dict],
     sleep_s: float = 0.2,
-    interval: Optional[str] = None,
+    interval: str = "all",
     fidelity: int = 60,
-    max_tokens: int = 50,
+    max_tokens: int = 100,
 ) -> Tuple[Optional[str], List[Dict]]:
-    """
-    Try tokens from the provided markets until one returns non-empty history.
-    Stops after max_tokens attempts to avoid long scans.
-    """
     checked = 0
     for m in markets:
         for tok in _extract_token_ids(m.get("clobTokenIds")):
@@ -223,16 +251,17 @@ def find_first_history(
 
 
 if __name__ == "__main__":
-    # Smoke test: try newer markets first (higher offsets) to find a token with history quickly.
-    offsets_to_try = [15000, 18000, 20000, 22000]
+    offsets_to_try = [0, 5000, 10000, 15000]
     found = False
     for start in offsets_to_try:
         print(f"\nFetching resolved markets (start_offset={start})...")
-        mkts = fetch_resolved_markets(max_markets=200, page_size=100, sleep_s=0.2, start_offset=start)
+        mkts = fetch_resolved_markets(
+            max_markets=200, page_size=100, sleep_s=0.2, start_offset=start
+        )
         print(f"Fetched {len(mkts)} markets.")
         if mkts:
             tok, hist = find_first_history(
-                mkts, sleep_s=0.2, interval=None, fidelity=60, max_tokens=50
+                mkts, sleep_s=0.2, interval="all", fidelity=60, max_tokens=100
             )
             if tok and hist:
                 hdf = price_history_to_dataframe(hist)
