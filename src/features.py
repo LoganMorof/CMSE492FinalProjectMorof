@@ -179,11 +179,15 @@ def compute_market_features(
 
 def build_training_dataset(
     markets: List[Dict],
-    snapshot_offset_days: int = 3,
+    snapshot_offset_days_list: Sequence[int] = (7, 3, 1),
     max_markets: Optional[int] = None,
     min_history_points: int = 1,
     verbose: bool = False,
 ) -> pd.DataFrame:
+    """
+    Build a training DataFrame by fetching histories, computing features, and assembling rows.
+    Each market can contribute multiple rows (one per snapshot_offset_days entry).
+    """
     rows: List[Dict] = []
     to_iterate = markets[:max_markets] if max_markets else markets
 
@@ -196,24 +200,24 @@ def build_training_dataset(
             skipped_no_token += 1
             continue
 
-        # Try tokens until one yields features
-        feats_row = None
+        added_for_market = False
         for tok in token_ids:
             history = fetch_price_history(tok, interval="all", fidelity=60)
             hdf = price_history_to_dataframe(history)
-            feats = compute_market_features(
-                market=market,
-                history_df=hdf,
-                snapshot_offset_days=snapshot_offset_days,
-                min_history_points=min_history_points,
-            )
-            if feats is not None:
-                feats_row = feats
-                break
-
-        if feats_row is not None:
-            rows.append(feats_row)
-        else:
+            for offset in snapshot_offset_days_list:
+                feats = compute_market_features(
+                    market=market,
+                    history_df=hdf,
+                    snapshot_offset_days=offset,
+                    min_history_points=min_history_points,
+                )
+                if feats is not None:
+                    feats["snapshot_offset_days"] = offset
+                    rows.append(feats)
+                    added_for_market = True
+            if added_for_market:
+                break  # no need to try other tokens once we have rows
+        if not added_for_market:
             skipped_label += 1
 
     if verbose:
@@ -235,7 +239,11 @@ def save_training_dataset_to_csv(
 
 if __name__ == "__main__":
     print("Fetching resolved markets...")
-    markets = fetch_resolved_markets(max_markets=300, page_size=100, sleep_s=0.2)
+    markets = fetch_resolved_markets(
+        max_markets=1500,
+        page_size=100,
+        sleep_s=0.2,
+    )
     print(f"Fetched {len(markets)} markets.")
     _mdf = markets_to_dataframe(markets)
     if not _mdf.empty:
@@ -245,7 +253,7 @@ if __name__ == "__main__":
     print("\nBuilding training dataset...")
     df = build_training_dataset(
         markets=markets,
-        snapshot_offset_days=3,
+        snapshot_offset_days_list=(7, 3, 1),
         max_markets=None,
         min_history_points=1,
         verbose=True,
