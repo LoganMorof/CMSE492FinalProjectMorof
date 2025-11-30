@@ -23,21 +23,33 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 INPUT_PATH = "data/processed/training_data_clean.csv"
-RESULTS_PATH = "data/processed/model_results_simple.json"
+RESULTS_PATH = "data/processed/model_results_simple_misprice.json"
 MODELS_DIR = "models"
 
 
 def load_data() -> Tuple[pd.DataFrame, pd.Series]:
-    """Load cleaned dataset and split into features and target."""
+    """Load cleaned dataset, build mispricing target, and split into features/target."""
     if not os.path.exists(INPUT_PATH):
         print(f"Error: input file not found at {INPUT_PATH}")
         raise SystemExit(1)
     df = pd.read_csv(INPUT_PATH)
-    if "y" not in df.columns:
-        print("Error: target column 'y' not found in dataset.")
+
+    required_cols = {"last_price", "final_price"}
+    missing = required_cols - set(df.columns)
+    if missing:
+        print(f"Error: required columns missing: {missing}")
         raise SystemExit(1)
-    y = df["y"]
-    X = df.drop(columns=["y"])
+
+    gap = df["final_price"] - df["last_price"]
+    y = (gap.abs() >= 0.15).astype(int)
+    df["y_misprice"] = y
+
+    # Drop target and leakage columns from features
+    X = df.drop(columns=["y", "final_price", "y_misprice"], errors="ignore")
+
+    print("Mispricing label distribution (y_misprice):")
+    print(y.value_counts(normalize=False))
+    print(y.value_counts(normalize=True))
     return X, y
 
 
@@ -57,7 +69,7 @@ def evaluate_model(name: str, model, X_test: pd.DataFrame, y_test: pd.Series) ->
         "f1": f1_score(y_test, y_pred, zero_division=0),
         "roc_auc": roc_auc,
     }
-    print(f"\n{name} metrics:")
+    print(f"\n{name} metrics (mispricing):")
     for k, v in metrics.items():
         print(f"  {k}: {v:.4f}")
     print("Confusion matrix:")
@@ -133,8 +145,8 @@ def main() -> None:
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    baseline_acc = (y_test == 1).mean()
-    print(f"Baseline accuracy (always predict 1): {baseline_acc:.4f}")
+    baseline_acc = (y_test == 0).mean()
+    print(f"Baseline accuracy (always predict no mispricing = 0): {baseline_acc:.4f}")
 
     models = train_models(X_train, y_train)
 
@@ -149,7 +161,7 @@ def main() -> None:
 
     os.makedirs(MODELS_DIR, exist_ok=True)
     for name, model in models.items():
-        model_path = os.path.join(MODELS_DIR, f"{name.replace(' ', '_')}_simple.joblib")
+        model_path = os.path.join(MODELS_DIR, f"{name.replace(' ', '_')}_misprice.joblib")
         joblib.dump(model, model_path)
         print(f"Saved model: {model_path}")
 
