@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.5)  30 NOV 2025 18:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.5)  30 NOV 2025 21:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -319,24 +319,24 @@ File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 (./final_report.aux)
 \openout1 = `final_report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
 
 (/usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -394,146 +394,147 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 13.
+Package hyperref Info: Link coloring OFF on input line 14.
 (./final_report.out) (./final_report.out)
 \@outlinefile=\write3
 \openout3 = `final_report.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 15.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 16.
 
 
 (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 15.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 16.
 
 
 (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<../figures/class_balance_counts.png, id=60, 842.4273pt x 338.2236pt>
+{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
+al/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+<../figures/class_balance_counts.png, id=96, 842.4273pt x 338.2236pt>
 File: ../figures/class_balance_counts.png Graphic file (type png)
 <use ../figures/class_balance_counts.png>
 Package pdftex.def Info: ../figures/class_balance_counts.png  used on input lin
-e 62.
+e 90.
 (pdftex.def)             Requested size: 328.82707pt x 132.0202pt.
-<../figures/class_balance_proportions.png, id=62, 842.4273pt x 338.2236pt>
+ [2]
+<../figures/class_balance_proportions.png, id=105, 842.4273pt x 338.2236pt>
 File: ../figures/class_balance_proportions.png Graphic file (type png)
 <use ../figures/class_balance_proportions.png>
 Package pdftex.def Info: ../figures/class_balance_proportions.png  used on inpu
-t line 69.
+t line 96.
 (pdftex.def)             Requested size: 328.82707pt x 132.0202pt.
- [2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.en
-c} <../figures/class_balance_counts.png>] [3 <../figures/class_balance_proporti
-ons.png>]
-<../figures/roc_curve_xgb_misprice.png, id=84, 462.528pt x 415.7934pt>
+ [3 <../figures/class_balance_counts.png> <../figures/class_balance_proportions
+.png>] [4]
+<../figures/roc_curve_xgb_misprice.png, id=129, 462.528pt x 415.7934pt>
 File: ../figures/roc_curve_xgb_misprice.png Graphic file (type png)
 <use ../figures/roc_curve_xgb_misprice.png>
 Package pdftex.def Info: ../figures/roc_curve_xgb_misprice.png  used on input l
-ine 128.
+ine 201.
 (pdftex.def)             Requested size: 328.82707pt x 295.61507pt.
-<../figures/pr_curve_xgb_misprice.png, id=85, 462.528pt x 415.7934pt>
+<../figures/pr_curve_xgb_misprice.png, id=130, 462.528pt x 415.7934pt>
 File: ../figures/pr_curve_xgb_misprice.png Graphic file (type png)
 <use ../figures/pr_curve_xgb_misprice.png>
 Package pdftex.def Info: ../figures/pr_curve_xgb_misprice.png  used on input li
-ne 135.
+ne 207.
 (pdftex.def)             Requested size: 328.82707pt x 295.61507pt.
- [4 <../figures/roc_curve_xgb_misprice.png>]
-<../figures/threshold_sweep_precision_recall_f1.png, id=97, 648.9846pt x 415.79
-34pt>
+
+[5 <../figures/roc_curve_xgb_misprice.png>]
+<../figures/threshold_sweep_precision_recall_f1.png, id=137, 648.9846pt x 415.7
+934pt>
 File: ../figures/threshold_sweep_precision_recall_f1.png Graphic file (type png
 )
 <use ../figures/threshold_sweep_precision_recall_f1.png>
 Package pdftex.def Info: ../figures/threshold_sweep_precision_recall_f1.png  us
-ed on input line 146.
+ed on input line 214.
 (pdftex.def)             Requested size: 328.82707pt x 210.67506pt.
- [5 <../figures/pr_curve_xgb_misprice.png>]
-<../figures/confusion_matrix_t_f1.png, id=104, 837.3684pt x 337.9827pt>
+<../figures/confusion_matrix_t_f1.png, id=138, 837.3684pt x 337.9827pt>
 File: ../figures/confusion_matrix_t_f1.png Graphic file (type png)
 <use ../figures/confusion_matrix_t_f1.png>
 Package pdftex.def Info: ../figures/confusion_matrix_t_f1.png  used on input li
-ne 155.
-(pdftex.def)             Requested size: 422.77664pt x 170.6464pt.
-<../figures/confusion_matrix_t_prec.png, id=105, 837.3684pt x 337.9827pt>
+ne 221.
+(pdftex.def)             Requested size: 469.75502pt x 189.60939pt.
+ [6 <../figures/pr_curve_xgb_misprice.png> <../figures/threshold_sweep_precisio
+n_recall_f1.png>]
+<../figures/confusion_matrix_t_prec.png, id=147, 837.3684pt x 337.9827pt>
 File: ../figures/confusion_matrix_t_prec.png Graphic file (type png)
 <use ../figures/confusion_matrix_t_prec.png>
 Package pdftex.def Info: ../figures/confusion_matrix_t_prec.png  used on input 
-line 161.
-(pdftex.def)             Requested size: 422.77664pt x 170.6464pt.
-
-[6 <../figures/threshold_sweep_precision_recall_f1.png> <../figures/confusion_m
-atrix_t_f1.png>]
-<../figures/xgb_feature_importances_top20.png, id=114, 697.6464pt x 554.5518pt>
+line 227.
+(pdftex.def)             Requested size: 469.75502pt x 189.60939pt.
+<../figures/xgb_feature_importances_top20.png, id=148, 697.6464pt x 554.5518pt>
 
 File: ../figures/xgb_feature_importances_top20.png Graphic file (type png)
 <use ../figures/xgb_feature_importances_top20.png>
 Package pdftex.def Info: ../figures/xgb_feature_importances_top20.png  used on 
-input line 171.
-(pdftex.def)             Requested size: 328.82707pt x 261.38402pt.
-<../figures/shap_summary.png, id=116, 547.5657pt x 676.929pt>
+input line 237.
+(pdftex.def)             Requested size: 352.31625pt x 280.05914pt.
+ [7 <../figures/confusion_matrix_t_f1.png> <../figures/confusion_matrix_t_prec.
+png>]
+<../figures/shap_summary.png, id=158, 547.5657pt x 676.929pt>
 File: ../figures/shap_summary.png Graphic file (type png)
 <use ../figures/shap_summary.png>
-Package pdftex.def Info: ../figures/shap_summary.png  used on input line 180.
+Package pdftex.def Info: ../figures/shap_summary.png  used on input line 244.
 (pdftex.def)             Requested size: 328.82707pt x 406.51172pt.
- [7 <../figures/confusion_matrix_t_prec.png> <../figures/xgb_feature_importance
-s_top20.png>]
-<../figures/backtest_pnl_kde.png, id=129, 634.7715pt x 416.5161pt>
+ [8 <../figures/xgb_feature_importances_top20.png>] [9 <../figures/shap_summary
+.png>]
+<../figures/backtest_pnl_kde.png, id=172, 634.7715pt x 416.5161pt>
 File: ../figures/backtest_pnl_kde.png Graphic file (type png)
 <use ../figures/backtest_pnl_kde.png>
-Package pdftex.def Info: ../figures/backtest_pnl_kde.png  used on input line 19
-9.
-(pdftex.def)             Requested size: 328.82707pt x 215.76974pt.
- [8 <../figures/shap_summary.png>]
-<../figures/backtest_pnl_bars.png, id=137, 825.0825pt x 337.9827pt>
+Package pdftex.def Info: ../figures/backtest_pnl_kde.png  used on input line 26
+7.
+(pdftex.def)             Requested size: 352.31625pt x 231.18187pt.
+<../figures/backtest_pnl_bars.png, id=173, 825.0825pt x 337.9827pt>
 File: ../figures/backtest_pnl_bars.png Graphic file (type png)
 <use ../figures/backtest_pnl_bars.png>
 Package pdftex.def Info: ../figures/backtest_pnl_bars.png  used on input line 2
-06.
-(pdftex.def)             Requested size: 328.82707pt x 134.70074pt.
-<../figures/cost_sensitive_threshold_cost.png, id=139, 635.2533pt x 416.0343pt>
+73.
+(pdftex.def)             Requested size: 352.31625pt x 144.32407pt.
+<../figures/cost_sensitive_threshold_cost.png, id=174, 635.2533pt x 416.0343pt>
 
 File: ../figures/cost_sensitive_threshold_cost.png Graphic file (type png)
 <use ../figures/cost_sensitive_threshold_cost.png>
 Package pdftex.def Info: ../figures/cost_sensitive_threshold_cost.png  used on 
-input line 215.
+input line 280.
 (pdftex.def)             Requested size: 352.31625pt x 230.73036pt.
- [9 <../figures/backtest_pnl_kde.png> <../figures/backtest_pnl_bars.png>] (./fi
-nal_report.bbl
 
-LaTeX Warning: Empty `thebibliography' environment on input line 3.
-
-) [10 <../figures/cost_sensitive_threshold_cost.png>] (./final_report.aux)
+[10 <../figures/backtest_pnl_kde.png> <../figures/backtest_pnl_bars.png>]
+(./final_report.bbl [11 <../figures/cost_sensitive_threshold_cost.png>])
+[12] (./final_report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `final_report.out' has not changed.
-(rerunfilecheck)             Checksum: 2D06E1AEB64F5F26650EBA23F2DA5ACA;1516.
+(rerunfilecheck)             Checksum: C0F1173C8A3E7A7F1EA543D367F7A588;2931.
  ) 
 Here is how much of TeX's memory you used:
- 10323 strings out of 474116
- 159011 string characters out of 5743682
- 1938187 words of memory out of 5000000
- 32522 multiletter control sequences out of 15000+600000
- 566123 words of font info for 66 fonts, out of 8000000 for 9000
+ 10375 strings out of 474116
+ 159633 string characters out of 5743682
+ 1937187 words of memory out of 5000000
+ 32546 multiletter control sequences out of 15000+600000
+ 568297 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,10n,79p,1004b,524s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,10n,79p,822b,557s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
-usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></us
-r/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/
-local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/lo
-cal/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local
-/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/
-texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on final_report.pdf (10 pages, 2245643 bytes).
+usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
+r/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
+cal/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loca
+l/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
+exlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/tex
+live/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on final_report.pdf (12 pages, 2279796 bytes).
 PDF statistics:
- 210 PDF objects out of 1000 (max. 8388607)
- 152 compressed objects within 2 object streams
- 40 named destinations out of 1000 (max. 500000)
- 149 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 288 PDF objects out of 1000 (max. 8388607)
+ 223 compressed objects within 3 object streams
+ 65 named destinations out of 1000 (max. 500000)
+ 221 words of extra memory for PDF output out of 10000 (max. 10000000)
 

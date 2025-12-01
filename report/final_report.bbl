@@ -1,3 +1,56 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
+
+\bibitem{polymarket_api}
+Polymarket api reference.
+\newblock \url{https://data-api.polymarket.com}.
+\newblock Accessed 2025-01-10.
+
+\bibitem{polymarket_docs}
+Polymarket documentation.
+\newblock \url{https://docs.polymarket.com/}.
+\newblock Accessed 2025-01-10.
+
+\bibitem{xgboost}
+Tianqi Chen and Carlos Guestrin.
+\newblock Xgboost documentation.
+\newblock \url{https://xgboost.readthedocs.io/}, 2016.
+
+\bibitem{sklearn}
+Pedregosa et~al.
+\newblock Scikit-learn machine learning in python.
+\newblock \url{https://scikit-learn.org/stable/}, 2011.
+
+\bibitem{matplotlib}
+J.~D. Hunter and Matplotlib Developers.
+\newblock Matplotlib: Visualization with python.
+\newblock \url{https://matplotlib.org}, 2024.
+
+\bibitem{shap}
+Scott~M. Lundberg and Su-In Lee.
+\newblock Shap: Shapley additive explanations.
+\newblock \url{https://shap.readthedocs.io/}, 2017.
+
+\bibitem{chatgpt}
+OpenAI.
+\newblock Chatgpt (gpt-5.1 model).
+\newblock \url{https://chat.openai.com}, 2025.
+\newblock Used extensively for drafting, debugging, analysis, and project
+  collaboration.
+
+\bibitem{codex}
+OpenAI.
+\newblock Github copilot / openai codex.
+\newblock \url{https://github.com/features/copilot}, 2025.
+\newblock Used for code generation and notebook construction assistance.
+
+\bibitem{pandas}
+The pandas~development team.
+\newblock pandas: Python data analysis library.
+\newblock \url{https://pandas.pydata.org/}, 2024.
+
+\bibitem{seaborn}
+Michael Waskom.
+\newblock Seaborn statistical visualization.
+\newblock \url{https://seaborn.pydata.org}, 2024.
 
 \end{thebibliography}

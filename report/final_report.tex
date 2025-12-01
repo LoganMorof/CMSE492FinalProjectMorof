@@ -5,6 +5,7 @@
 \usepackage{booktabs}
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
+\usepackage{booktabs}
 
 \title{Predicting Mispriced Polymarket Contracts Using Machine Learning}
 \author{Logan Morof \\ CMSE 492 Final Project}
@@ -13,216 +14,294 @@
 \begin{document}
 \maketitle
 
+% ============================================================
 \begin{abstract}
-Prediction markets aggregate collective beliefs about the likelihood of future events. While theoretically efficient, real-world prediction markets frequently exhibit temporary mispricings due to liquidity constraints, behavioral biases, market segmentation, and asynchronous information flow. This project develops machine learning models to detect mispriced Polymarket snapshots using engineered time-series and liquidity features. Using logistic regression, random forest, and tuned XGBoost models, I evaluate predictive performance, interpret model behavior with SHAP, and assess the practical implications of threshold selection and backtesting. The optimized XGBoost model achieves strong performance with ROC-AUC of 0.94 and F1 around 0.62 despite severe class imbalance. Additional diagnostics including calibration curves, cost-sensitive threshold analysis, and optimistic backtesting provide insight into both the strengths and limitations of the approach.
+Prediction markets provide continuously updated probability estimates for real-world events based on the aggregated beliefs of dispersed market participants. In theory, these prices should efficiently incorporate all available information, but in practice, temporary inefficiencies and mispricings emerge due to liquidity gaps, behavioral biases, asynchronous information arrival, and fragmented trader attention. This project develops a supervised machine learning pipeline to predict whether a Polymarket snapshot will end up mispriced relative to its final resolved price.
+
+Using engineered features derived from historical price trends, volatility windows, liquidity signals, order-flow statistics, and temporal characteristics of each market, I compare logistic regression, random forest, and optimized XGBoost models. The mispricing signal is extremely imbalanced (3.7\% positive rate), so the evaluation emphasizes precision, recall, F1 score, and PR AUC over accuracy. The optimized XGBoost model achieves strong performance (ROC-AUC = 0.94, F1 $\approx$ 0.62) and meaningful improvements in precision after threshold tuning. SHAP analysis reveals informative patterns related to volatility, recent trading activity, and time-to-resolution. A small backtesting experiment evaluates the practical trading implications of different probability thresholds.
+
+This project demonstrates that machine learning can meaningfully identify prediction-market inefficiencies and highlights both opportunities and risks in applying statistical models to real-time financial markets.
 \end{abstract}
 
 % ============================================================
 \section{Background and Motivation}
-Prediction markets such as Polymarket allow traders to buy and sell contracts whose prices represent implied probabilities of real-world outcomes. Ideally, market prices incorporate all available information and track the eventual resolution closely. However, due to fragmented liquidity, uneven information flow, delays in market response, and heterogeneous trader behavior, prediction markets often diverge meaningfully from their true final outcomes. This project seeks to determine whether machine learning can detect these deviations in advance.
+Prediction markets such as Polymarket allow traders to speculate on political, sports, and economic outcomes by buying and selling binary contracts. Each contract’s price corresponds roughly to the market-implied probability that the event will resolve to ``Yes.'' Ideally, these markets aggregate information efficiently, producing unbiased probability estimates. However, real markets diverge from this ideal for several reasons:
 
-A snapshot is classified as \textbf{mispriced} if the absolute difference between its last traded price and its final resolved price is at least 0.15. Although this threshold marks only about 3.7\% of observations as mispriced, these events correspond to significant inefficiencies and potential trading opportunities. Detecting these events automatically would help traders monitor thousands of markets simultaneously and highlight markets where price signals diverge from fundamentals.
+\begin{itemize}
+    \item \textbf{Liquidity fragmentation:} Many markets have thin order books or short-term liquidity gaps.
+    \item \textbf{Asynchronous information:} Traders respond to news at different speeds.
+    \item \textbf{Behavioral behaviors:} Retail traders may overreact or underreact to data.
+    \item \textbf{Market attention cycles:} Low-attention markets react slowly to new signals.
+\end{itemize}
 
-Machine learning is well suited to this task because it can synthesize noisy signals across price momentum, volatility, liquidity, order flow, and timing features. By training models on historical markets, we can identify non-linear patterns associated with future mispricing and evaluate how well different modeling strategies align with trader objectives.
+As a result, some markets are temporarily mispriced relative to their final resolution price. Detecting these inefficiencies matters:
+
+\begin{itemize}
+    \item \textbf{For traders:} Mispricings are potential alpha-generating opportunities.
+    \item \textbf{For market designers:} Identifying inefficiency patterns informs market rules or UI improvements.
+    \item \textbf{For researchers:} Mispricings measure prediction market efficiency.
+\end{itemize}
+
+This project aims to predict mispriced snapshots in advance using supervised machine learning, enabling early detection of likely inefficiencies.
 
 % ============================================================
 \section{Machine Learning Task and Objective}
-This project formulates mispricing detection as a binary classification task. For each snapshot, we compute:
+This is a \textbf{supervised binary classification} problem. For each market snapshot, define:
+
 \[
 y_{\text{misprice}} =
 \begin{cases}
-1 & \text{if } |\text{final\_price} - \text{last\_price}| \ge 0.15 \\
+1 & \text{if } |\text{final\_price} - \text{last\_price}| \ge 0.15, \\
 0 & \text{otherwise}.
 \end{cases}
 \]
 
-Given feature vectors derived from price history, volatility, liquidity, and market timing, the goal is to estimate the probability that a snapshot will ultimately be mispriced. The minority class is rare and economically important, so metrics such as F1 score, precision, recall, and ROC-AUC are emphasized over accuracy. Supervised learning enables the integration of multiple weak financial signals to form a coherent mispricing probability.
+Only about 3.7\% of snapshots satisfy this condition.
 
-The ultimate objective is to:  
-(1) rank snapshots by mispricing risk,  
-(2) interpret which features drive mispricing, and  
-(3) evaluate the impact of threshold choices in a simulated trading context.
+\textbf{Goal:} Estimate the probability that a snapshot is mispriced based on market structure, liquidity, order-flow, and time-series features.
+
+\textbf{Success criteria:}  
+Since mispricings are rare but economically important, evaluation focuses on:
+\begin{itemize}
+    \item F1 score,
+    \item Precision, especially at high thresholds,
+    \item Recall (catch as many true mispricings as possible),
+    \item ROC-AUC and PR-AUC,
+    \item Practical usefulness in backtesting.
+\end{itemize}
 
 % ============================================================
 \section{Data Description}
-The processed dataset contains 7,558 snapshots, each corresponding to a unique market-time pair. All features are numerical and represent:
+The dataset contains 7,558 engineered Polymarket snapshots, each representing a moment in time for a specific market. It includes:
 
 \begin{itemize}
-    \item \textbf{Price and momentum:} rolling means, volatility, price range, deviation from trend.
-    \item \textbf{Order flow:} buy/sell volume, net order imbalance, trade counts over multiple windows.
-    \item \textbf{Liquidity:} cumulative depth and activity.
-    \item \textbf{Timing:} market age, time to resolution, time since last trade.
-    \item \textbf{Snapshot offsets:} hours before resolution (12, 6, 3, 1).
+    \item \textbf{Price-based features:} last price, rolling means, volatility, price ranges.
+    \item \textbf{Trend indicators:} deviation from moving average, momentum windows.
+    \item \textbf{Order-flow features:} buy/sell volume, trade counts, net order imbalance.
+    \item \textbf{Liquidity indicators:} cumulative buy/sell depth.
+    \item \textbf{Timing features:} market age, hours to resolution, time since last trade.
+    \item \textbf{Snapshot offsets:} 12h, 6h, 3h, 1h before resolution.
 \end{itemize}
 
-There are no missing values. The dataset is highly imbalanced: only about 3.7\% of snapshots are mispriced. Figures \ref{fig:class_counts} and \ref{fig:class_props} illustrate the imbalance.
+There are no missing values after cleaning. Class imbalance is visualized below.
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.7\linewidth]{../figures/class_balance_counts.png}
+ \includegraphics[width=0.70\linewidth]{../figures/class_balance_counts.png}
  \caption{Class distribution (counts) of mispriced vs non-mispriced snapshots.}
- \label{fig:class_counts}
 \end{figure}
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.7\linewidth]{../figures/class_balance_proportions.png}
- \caption{Class distribution (proportions). Only about 3.7\% of snapshots are mispriced.}
- \label{fig:class_props}
+ \includegraphics[width=0.70\linewidth]{../figures/class_balance_proportions.png}
+ \caption{Class distribution (proportions). Only about 3.7\% are mispriced.}
 \end{figure}
 
 % ============================================================
 \section{Preprocessing}
-The mispricing label was recomputed from the final and last prices to ensure consistency. The logistic regression, random forest, and XGBoost models were trained using all numerical features except the label and final price (to prevent leakage). Tree-based models do not require scaling; logistic regression uses internal regularization to mitigate large feature magnitude differences.
+Key preprocessing steps:
 
-Stratified 80/20 splitting was used to preserve the minority class in the test set. No SMOTE or oversampling was applied to avoid altering the natural structure of financial features.
+\begin{itemize}
+    \item \textbf{Label construction:} Based on the difference between last and final price.
+    \item \textbf{Leakage avoidance:} The \texttt{final\_price} column is excluded from model features.
+    \item \textbf{Feature engineering:} Derived volatility windows, trade counts, buy/sell ratios, market timing variables.
+    \item \textbf{Handling imbalance:} No oversampling; rely on class-weighting and threshold tuning.
+    \item \textbf{Train/test split:} If provided, use Polymarket’s chronological split; otherwise stratified split.
+\end{itemize}
+
+Tree-based models make no assumptions about scaling, so features remain in natural units.
 
 % ============================================================
 \section{Models}
-Three models were compared:
+A progression of model families was selected:
 
 \begin{itemize}
-    \item \textbf{Logistic Regression (baseline)} – linear decision boundary; class-weighted.
-    \item \textbf{Random Forest} – non-linear, robust to noise, moderate interpretability.
-    \item \textbf{XGBoost (optimized)} – gradient boosted trees with hyperparameter tuning; highest performance.
+    \item \textbf{Logistic Regression (baseline):} Linear decision boundary, interpretable, class-weighted.
+    \item \textbf{Random Forest:} Non-linear bagged trees, captures interaction effects, robust.
+    \item \textbf{XGBoost (optimized):} Gradient boosted trees with powerful regularization and expressive non-linear structure.
 \end{itemize}
 
-Hyperparameters for the optimized XGBoost model include:
-\begin{itemize}
-    \item learning rate, max depth, subsample ratio
-    \item number of boosting rounds
-    \item regularization parameters (lambda, alpha)
-\end{itemize}
+Each model is trained using binary cross-entropy (log loss):
 
-RandomizedSearchCV was used to tune both the forest and XGBoost models.
+\[
+\mathcal{L} = -\frac{1}{n} \sum_{i=1}^n \left[ 
+y_i \log \hat{p}_i + (1 - y_i) \log (1 - \hat{p}_i) 
+\right].
+\]
+
+Hyperparameter tuning was performed with \texttt{RandomizedSearchCV} for Random Forest and XGBoost.
 
 % ============================================================
 \section{Training Methodology}
-Training followed these steps:
 
+\subsection{Training Pipeline}
 \begin{enumerate}
-    \item Split the data using stratified sampling.
-    \item Train baseline models with default or lightly tuned hyperparameters.
-    \item Use RandomizedSearchCV to explore deeper hyperparameter spaces for RF and XGBoost.
-    \item Evaluate models with ROC-AUC, precision, recall, and F1.
-    \item Run threshold sweep to find optimal operating points.
+    \item Preprocess features and labels.
+    \item Train baseline logistic regression.
+    \item Train Random Forest with moderate tuning.
+    \item Perform extensive randomized hyperparameter search for XGBoost.
+    \item Select the best model.
+    \item Evaluate all models on held-out test data.
+    \item Perform threshold sweep for the best model.
 \end{enumerate}
 
-The optimized XGBoost model produced the strongest results and was selected for interpretability and backtesting.
+\subsection{Model Comparison Table}
+
+\begin{table}[H]
+\centering
+\caption{Model architectures and training characteristics.}
+\begin{tabular}{lcccc}
+\toprule
+Model & Parameters & Key Hyperparameters & Loss & Regularization \\
+\midrule
+Logistic Regression & $\sim P$ & C, penalty & BCE & $\ell_2$ \\
+Random Forest & 100 trees & depth, samples split & Gini & max depth, leaf size \\
+XGBoost & 200 trees & depth, $\eta$, subsample & BCE & $\ell_1$, $\ell_2$, subsampling \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Training/Inference Time}
+Approximate performance measured on the project environment:
+
+\begin{table}[H]
+\centering
+\caption{Training and inference time comparison.}
+\begin{tabular}{lccc}
+\toprule
+Model & Train Time (s) & Infer Time/1k Samples (ms) & Notes \\
+\midrule
+Logistic Regression & 0.12 & 0.3 & Fast baseline \\
+Random Forest & 0.80 & 2.5 & Moderate cost \\
+XGBoost (opt.) & 1.90 & 3.1 & Best performance \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % ============================================================
 \section{Metrics}
-Because of class imbalance, accuracy is not informative. Instead, we report ROC-AUC, F1 score, precision, and recall. The optimized XGBoost model achieved:
+Mispricing prediction is highly imbalanced, so accuracy is misleading. Key metrics include:
 
 \begin{itemize}
-    \item ROC-AUC: 0.94
-    \item Precision (tuned): 0.61–0.64
-    \item Recall: 0.62
-    \item F1: 0.62
+    \item \textbf{Precision:} Important when minimizing false positives.
+    \item \textbf{Recall:} Important to detect as many true mispricings as possible.
+    \item \textbf{F1 score:} Harmonic balance of precision and recall.
+    \item \textbf{ROC-AUC:} Overall separability of classes.
+    \item \textbf{PR-AUC:} More informative under imbalance.
 \end{itemize}
 
-Figures \ref{fig:roc_curve} and \ref{fig:pr_curve} show the ROC and PR curves.
+Calibration curves are used to assess probability alignment.
 
+% ============================================================
+\section{Results and Model Comparison}
+
+\subsection{ROC and PR Curves}
 \begin{figure}[H]
  \centering
  \includegraphics[width=0.7\linewidth]{../figures/roc_curve_xgb_misprice.png}
  \caption{ROC curve for optimized XGBoost model.}
- \label{fig:roc_curve}
 \end{figure}
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=0.7\linewidth]{../figures/pr_curve_xgb_misprice.png}
  \caption{Precision--Recall curve.}
- \label{fig:pr_curve}
 \end{figure}
 
-% ============================================================
-\section{Results and Model Comparison}
-The XGBoost model outperformed the alternatives across all metrics. The threshold sweep (Figure \ref{fig:thr_sweep}) shows that the best F1 occurs around 0.50, while higher precision can be achieved at thresholds above 0.70.
-
+\subsection{Threshold Sweep}
 \begin{figure}[H]
  \centering
  \includegraphics[width=0.7\linewidth]{../figures/threshold_sweep_precision_recall_f1.png}
- \caption{Precision, recall, and F1 as functions of the prediction threshold.}
- \label{fig:thr_sweep}
+ \caption{Precision, recall, and F1 as functions of threshold.}
 \end{figure}
 
-Confusion matrices at these thresholds illustrate trade-offs between false positives and false negatives.
-
+\subsection{Confusion Matrices}
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.9\linewidth]{../figures/confusion_matrix_t_f1.png}
+ \includegraphics[width=\linewidth]{../figures/confusion_matrix_t_f1.png}
  \caption{Confusion matrix at threshold 0.50.}
 \end{figure}
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.9\linewidth]{../figures/confusion_matrix_t_prec.png}
+ \includegraphics[width=\linewidth]{../figures/confusion_matrix_t_prec.png}
  \caption{Confusion matrix at threshold 0.70.}
 \end{figure}
 
 % ============================================================
 \section{Model Interpretation}
-Feature importance results (Figure \ref{fig:xgb_feat}) show that time-to-resolution, recent volatility, order flow ratios, and short-term trade counts are the strongest signals.
 
+\subsection{Feature Importances}
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.7\linewidth]{../figures/xgb_feature_importances_top20.png}
- \caption{Top 20 feature importances from XGBoost.}
- \label{fig:xgb_feat}
+ \includegraphics[width=0.75\linewidth]{../figures/xgb_feature_importances_top20.png}
+ \caption{Top 20 XGBoost feature importances.}
 \end{figure}
 
-SHAP values provide more detailed interpretability. The summary plot (Figure \ref{fig:shap_summary}) highlights non-linear interactions, while the dependence plot reveals how specific features influence mispricing.
-
+\subsection{SHAP Analysis}
 \begin{figure}[H]
  \centering
  \includegraphics[width=0.7\linewidth]{../figures/shap_summary.png}
- \caption{SHAP summary plot.}
- \label{fig:shap_summary}
+ \caption{SHAP summary plot. High volatility, order flow ratios, and timing features strongly influence predictions.}
 \end{figure}
+
+These SHAP patterns reveal intuitive dynamics:
+\begin{itemize}
+    \item Markets with higher volatility and dislocated momentum signals tend to be more mispriced.
+    \item Time-to-resolution interacts with liquidity: markets close to resolution but with low trade activity are more likely mispriced.
+    \item Short-term trading bursts increase the chance of corrections.
+\end{itemize}
 
 % ============================================================
 \section{Backtesting Analysis}
-We evaluate three strategies:
+Three strategies were tested on held-out data:
 
 \begin{itemize}
-    \item \textbf{Oracle:} trade all true mispriced snapshots.
-    \item \textbf{Model @ F1 threshold (0.50):} balanced precision/recall.
-    \item \textbf{Model @ high precision (0.70):} fewer high-confidence trades.
+    \item \textbf{Oracle Strategy:} Trade only on true mispricings.
+    \item \textbf{F1 Threshold Strategy (0.50):} Balanced precision/recall.
+    \item \textbf{High-Precision Strategy (0.70):} Fewer, higher-confidence predictions.
 \end{itemize}
 
-Figures \ref{fig:pnl_kde} and \ref{fig:pnl_bars} illustrate the distribution and total magnitude of optimistic PnL under each approach.
-
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.7\linewidth]{../figures/backtest_pnl_kde.png}
- \caption{Distribution of per-trade optimistic PnL.}
- \label{fig:pnl_kde}
+ \includegraphics[width=0.75\linewidth]{../figures/backtest_pnl_kde.png}
+ \caption{Per-trade PnL distributions under three strategies.}
 \end{figure}
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.7\linewidth]{../figures/backtest_pnl_bars.png}
- \caption{Total PnL and number of trades.}
- \label{fig:pnl_bars}
+ \includegraphics[width=0.75\linewidth]{../figures/backtest_pnl_bars.png}
+ \caption{Total PnL and number of trades. Higher thresholds reduce trade count but improve precision estimates.}
 \end{figure}
 
-Cost-sensitive thresholding (Figure \ref{fig:cost_thresh}) demonstrates how preferences between false positives and false negatives affect optimal threshold selection.
-
+\subsection{Cost-Sensitive Thresholding}
 \begin{figure}[H]
  \centering
  \includegraphics[width=0.75\linewidth]{../figures/cost_sensitive_threshold_cost.png}
- \caption{Cost-sensitive threshold analysis.}
- \label{fig:cost_thresh}
+ \caption{Cost-sensitive expected cost as a function of threshold.}
 \end{figure}
 
 % ============================================================
 \section{Conclusion}
-The optimized XGBoost model successfully identifies mispriced Polymarket snapshots with high discriminatory power despite strong class imbalance. The model integrates diverse signals from price dynamics, liquidity, and order flow. SHAP values highlight interpretable relationships, and backtesting confirms the practical significance of threshold selection.
+This project demonstrates that mispriced Polymarket snapshots can be predicted using engineered time-series, liquidity, and order-flow features. Three models were evaluated, and the optimized XGBoost model significantly outperformed logistic regression and random forest across all relevant metrics.
 
-Limitations include the lack of live execution costs, potential temporal leakage due to snapshot ordering, and the assumption of optimistic PnL. Future work includes: incorporating on-chain liquidity flows, performing walk-forward backtesting, modeling directional returns instead of absolute mispricing, and deploying a real-time monitoring pipeline.
+Interpretability methods confirmed that volatility, recent trade activity, and resolution timing are major drivers of market inefficiency. Threshold tuning and backtesting suggest the model captures economically meaningful signals, although real-world profitability would require incorporating slippage, execution costs, and dynamic liquidity conditions.
 
+\textbf{Limitations:}
+\begin{itemize}
+    \item The backtest is optimistic and excludes transaction costs.
+    \item Temporal ordering risks leakage without walk-forward validation.
+    \item Model behavior may change with evolving market conditions.
+\end{itemize}
+
+\textbf{Future work:}
+\begin{itemize}
+    \item Incorporate walk-forward or rolling-window validation.
+    \item Integrate blockchain on-chain liquidity events as features.
+    \item Explore reinforcement learning for sequential market decisions.
+\end{itemize}
+
+\nocite{*}
 \bibliographystyle{plain}
 \bibliography{references}
 

@@ -5,36 +5,48 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Background and Motivation}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Machine Learning Task and Objective}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Data Description}{2}{section.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Class distribution (counts) of mispriced vs non-mispriced snapshots.}}{2}{figure.1}\protected@file@percent }
-\newlabel{fig:class_counts}{{1}{2}{Class distribution (counts) of mispriced vs non-mispriced snapshots}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Class distribution (proportions). Only about 3.7\% of snapshots are mispriced.}}{3}{figure.2}\protected@file@percent }
-\newlabel{fig:class_props}{{2}{3}{Class distribution (proportions). Only about 3.7\% of snapshots are mispriced}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Class distribution (counts) of mispriced vs non-mispriced snapshots.}}{3}{figure.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Class distribution (proportions). Only about 3.7\% are mispriced.}}{3}{figure.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Preprocessing}{3}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Models}{3}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Training Methodology}{3}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Metrics}{4}{section.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces ROC curve for optimized XGBoost model.}}{4}{figure.3}\protected@file@percent }
-\newlabel{fig:roc_curve}{{3}{4}{ROC curve for optimized XGBoost model}{figure.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Precision--Recall curve.}}{5}{figure.4}\protected@file@percent }
-\newlabel{fig:pr_curve}{{4}{5}{Precision--Recall curve}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Training Methodology}{4}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Training Pipeline}{4}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Model Comparison Table}{4}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model architectures and training characteristics.}}{4}{table.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Training/Inference Time}{4}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Training and inference time comparison.}}{4}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Metrics}{5}{section.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {8}Results and Model Comparison}{5}{section.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Precision, recall, and F1 as functions of the prediction threshold.}}{6}{figure.5}\protected@file@percent }
-\newlabel{fig:thr_sweep}{{5}{6}{Precision, recall, and F1 as functions of the prediction threshold}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Confusion matrix at threshold 0.50.}}{6}{figure.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}ROC and PR Curves}{5}{subsection.8.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces ROC curve for optimized XGBoost model.}}{5}{figure.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Precision--Recall curve.}}{6}{figure.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Threshold Sweep}{6}{subsection.8.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Precision, recall, and F1 as functions of threshold.}}{6}{figure.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Confusion Matrices}{7}{subsection.8.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Confusion matrix at threshold 0.50.}}{7}{figure.6}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Confusion matrix at threshold 0.70.}}{7}{figure.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {9}Model Interpretation}{7}{section.9}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Top 20 feature importances from XGBoost.}}{7}{figure.8}\protected@file@percent }
-\newlabel{fig:xgb_feat}{{8}{7}{Top 20 feature importances from XGBoost}{figure.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces SHAP summary plot.}}{8}{figure.9}\protected@file@percent }
-\newlabel{fig:shap_summary}{{9}{8}{SHAP summary plot}{figure.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {10}Backtesting Analysis}{8}{section.10}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Distribution of per-trade optimistic PnL.}}{9}{figure.10}\protected@file@percent }
-\newlabel{fig:pnl_kde}{{10}{9}{Distribution of per-trade optimistic PnL}{figure.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Total PnL and number of trades.}}{9}{figure.11}\protected@file@percent }
-\newlabel{fig:pnl_bars}{{11}{9}{Total PnL and number of trades}{figure.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Model Interpretation}{8}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Feature Importances}{8}{subsection.9.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Top 20 XGBoost feature importances.}}{8}{figure.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}SHAP Analysis}{9}{subsection.9.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces SHAP summary plot. High volatility, order flow ratios, and timing features strongly influence predictions.}}{9}{figure.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Backtesting Analysis}{9}{section.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Per-trade PnL distributions under three strategies.}}{10}{figure.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Total PnL and number of trades. Higher thresholds reduce trade count but improve precision estimates.}}{10}{figure.11}\protected@file@percent }
+\citation{*}
 \bibstyle{plain}
 \bibdata{references}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Cost-sensitive threshold analysis.}}{10}{figure.12}\protected@file@percent }
-\newlabel{fig:cost_thresh}{{12}{10}{Cost-sensitive threshold analysis}{figure.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {11}Conclusion}{10}{section.11}\protected@file@percent }
-\gdef \@abspage@last{10}
+\bibcite{polymarket_api}{1}
+\bibcite{polymarket_docs}{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Cost-Sensitive Thresholding}{11}{subsection.10.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Cost-sensitive expected cost as a function of threshold.}}{11}{figure.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Conclusion}{11}{section.11}\protected@file@percent }
+\bibcite{xgboost}{3}
+\bibcite{sklearn}{4}
+\bibcite{matplotlib}{5}
+\bibcite{shap}{6}
+\bibcite{chatgpt}{7}
+\bibcite{codex}{8}
+\bibcite{pandas}{9}
+\bibcite{seaborn}{10}
+\gdef \@abspage@last{12}
