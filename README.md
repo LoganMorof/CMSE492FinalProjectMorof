@@ -5,7 +5,7 @@ Machine learning pipeline to flag mispriced Polymarket YES/NO markets using snap
 ## Quickstart
 1) Clone and create env
 ```bash
-git clone <repo-url>
+git clone https://github.com/LoganMorof/CMSE492FinalProjectMorof.git
 cd CMSE492FinalProjectMorof
 python -m venv .venv
 # macOS/Linux
