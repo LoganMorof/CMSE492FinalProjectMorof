@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.5)  30 NOV 2025 21:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.5)  3 DEC 2025 16:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -420,90 +420,74 @@ File: ../figures/class_balance_counts.png Graphic file (type png)
 Package pdftex.def Info: ../figures/class_balance_counts.png  used on input lin
 e 90.
 (pdftex.def)             Requested size: 328.82707pt x 132.0202pt.
- [2]
-<../figures/class_balance_proportions.png, id=105, 842.4273pt x 338.2236pt>
-File: ../figures/class_balance_proportions.png Graphic file (type png)
-<use ../figures/class_balance_proportions.png>
-Package pdftex.def Info: ../figures/class_balance_proportions.png  used on inpu
-t line 96.
-(pdftex.def)             Requested size: 328.82707pt x 132.0202pt.
- [3 <../figures/class_balance_counts.png> <../figures/class_balance_proportions
-.png>] [4]
-<../figures/roc_curve_xgb_misprice.png, id=129, 462.528pt x 415.7934pt>
+ [2] [3 <../figures/class_balance_counts.png>]
+<../figures/roc_curve_xgb_misprice.png, id=113, 462.528pt x 415.7934pt>
 File: ../figures/roc_curve_xgb_misprice.png Graphic file (type png)
 <use ../figures/roc_curve_xgb_misprice.png>
 Package pdftex.def Info: ../figures/roc_curve_xgb_misprice.png  used on input l
-ine 201.
+ine 195.
 (pdftex.def)             Requested size: 328.82707pt x 295.61507pt.
-<../figures/pr_curve_xgb_misprice.png, id=130, 462.528pt x 415.7934pt>
+ [4]
+<../figures/pr_curve_xgb_misprice.png, id=127, 462.528pt x 415.7934pt>
 File: ../figures/pr_curve_xgb_misprice.png Graphic file (type png)
 <use ../figures/pr_curve_xgb_misprice.png>
 Package pdftex.def Info: ../figures/pr_curve_xgb_misprice.png  used on input li
-ne 207.
+ne 201.
 (pdftex.def)             Requested size: 328.82707pt x 295.61507pt.
-
-[5 <../figures/roc_curve_xgb_misprice.png>]
-<../figures/threshold_sweep_precision_recall_f1.png, id=137, 648.9846pt x 415.7
+ [5 <../figures/roc_curve_xgb_misprice.png>]
+<../figures/threshold_sweep_precision_recall_f1.png, id=134, 648.9846pt x 415.7
 934pt>
 File: ../figures/threshold_sweep_precision_recall_f1.png Graphic file (type png
 )
 <use ../figures/threshold_sweep_precision_recall_f1.png>
 Package pdftex.def Info: ../figures/threshold_sweep_precision_recall_f1.png  us
-ed on input line 214.
+ed on input line 208.
 (pdftex.def)             Requested size: 328.82707pt x 210.67506pt.
-<../figures/confusion_matrix_t_f1.png, id=138, 837.3684pt x 337.9827pt>
+<../figures/confusion_matrix_t_f1.png, id=135, 837.3684pt x 337.9827pt>
 File: ../figures/confusion_matrix_t_f1.png Graphic file (type png)
 <use ../figures/confusion_matrix_t_f1.png>
 Package pdftex.def Info: ../figures/confusion_matrix_t_f1.png  used on input li
-ne 221.
+ne 215.
 (pdftex.def)             Requested size: 469.75502pt x 189.60939pt.
- [6 <../figures/pr_curve_xgb_misprice.png> <../figures/threshold_sweep_precisio
-n_recall_f1.png>]
-<../figures/confusion_matrix_t_prec.png, id=147, 837.3684pt x 337.9827pt>
-File: ../figures/confusion_matrix_t_prec.png Graphic file (type png)
-<use ../figures/confusion_matrix_t_prec.png>
-Package pdftex.def Info: ../figures/confusion_matrix_t_prec.png  used on input 
-line 227.
-(pdftex.def)             Requested size: 469.75502pt x 189.60939pt.
-<../figures/xgb_feature_importances_top20.png, id=148, 697.6464pt x 554.5518pt>
+
+[6 <../figures/pr_curve_xgb_misprice.png> <../figures/threshold_sweep_precision
+_recall_f1.png>]
+<../figures/xgb_feature_importances_top20.png, id=144, 697.6464pt x 554.5518pt>
 
 File: ../figures/xgb_feature_importances_top20.png Graphic file (type png)
 <use ../figures/xgb_feature_importances_top20.png>
 Package pdftex.def Info: ../figures/xgb_feature_importances_top20.png  used on 
-input line 237.
+input line 225.
 (pdftex.def)             Requested size: 352.31625pt x 280.05914pt.
- [7 <../figures/confusion_matrix_t_f1.png> <../figures/confusion_matrix_t_prec.
-png>]
-<../figures/shap_summary.png, id=158, 547.5657pt x 676.929pt>
+<../figures/shap_summary.png, id=145, 547.5657pt x 676.929pt>
 File: ../figures/shap_summary.png Graphic file (type png)
 <use ../figures/shap_summary.png>
-Package pdftex.def Info: ../figures/shap_summary.png  used on input line 244.
+Package pdftex.def Info: ../figures/shap_summary.png  used on input line 232.
 (pdftex.def)             Requested size: 328.82707pt x 406.51172pt.
- [8 <../figures/xgb_feature_importances_top20.png>] [9 <../figures/shap_summary
-.png>]
-<../figures/backtest_pnl_kde.png, id=172, 634.7715pt x 416.5161pt>
+ [7 <../figures/confusion_matrix_t_f1.png> <../figures/xgb_feature_importances_
+top20.png>] [8 <../figures/shap_summary.png>]
+<../figures/backtest_pnl_kde.png, id=162, 634.7715pt x 416.5161pt>
 File: ../figures/backtest_pnl_kde.png Graphic file (type png)
 <use ../figures/backtest_pnl_kde.png>
-Package pdftex.def Info: ../figures/backtest_pnl_kde.png  used on input line 26
-7.
+Package pdftex.def Info: ../figures/backtest_pnl_kde.png  used on input line 25
+5.
 (pdftex.def)             Requested size: 352.31625pt x 231.18187pt.
-<../figures/backtest_pnl_bars.png, id=173, 825.0825pt x 337.9827pt>
+<../figures/backtest_pnl_bars.png, id=163, 825.0825pt x 337.9827pt>
 File: ../figures/backtest_pnl_bars.png Graphic file (type png)
 <use ../figures/backtest_pnl_bars.png>
 Package pdftex.def Info: ../figures/backtest_pnl_bars.png  used on input line 2
-73.
+61.
 (pdftex.def)             Requested size: 352.31625pt x 144.32407pt.
-<../figures/cost_sensitive_threshold_cost.png, id=174, 635.2533pt x 416.0343pt>
+<../figures/cost_sensitive_threshold_cost.png, id=164, 635.2533pt x 416.0343pt>
 
 File: ../figures/cost_sensitive_threshold_cost.png Graphic file (type png)
 <use ../figures/cost_sensitive_threshold_cost.png>
 Package pdftex.def Info: ../figures/cost_sensitive_threshold_cost.png  used on 
-input line 280.
+input line 268.
 (pdftex.def)             Requested size: 352.31625pt x 230.73036pt.
-
-[10 <../figures/backtest_pnl_kde.png> <../figures/backtest_pnl_bars.png>]
-(./final_report.bbl [11 <../figures/cost_sensitive_threshold_cost.png>])
-[12] (./final_report.aux)
+ [9 <../figures/backtest_pnl_kde.png> <../figures/backtest_pnl_bars.png>] (./fi
+nal_report.bbl
+[10 <../figures/cost_sensitive_threshold_cost.png>]) [11] (./final_report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -512,10 +496,10 @@ Package rerunfilecheck Info: File `final_report.out' has not changed.
 (rerunfilecheck)             Checksum: C0F1173C8A3E7A7F1EA543D367F7A588;2931.
  ) 
 Here is how much of TeX's memory you used:
- 10375 strings out of 474116
- 159633 string characters out of 5743682
+ 10358 strings out of 474116
+ 158966 string characters out of 5743682
  1937187 words of memory out of 5000000
- 32546 multiletter control sequences out of 15000+600000
+ 32532 multiletter control sequences out of 15000+600000
  568297 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,10n,79p,822b,557s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -531,10 +515,10 @@ l/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
 exlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/tex
 live/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on final_report.pdf (12 pages, 2279796 bytes).
+Output written on final_report.pdf (11 pages, 2055612 bytes).
 PDF statistics:
- 288 PDF objects out of 1000 (max. 8388607)
- 223 compressed objects within 3 object streams
- 65 named destinations out of 1000 (max. 500000)
- 221 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 278 PDF objects out of 1000 (max. 8388607)
+ 218 compressed objects within 3 object streams
+ 62 named destinations out of 1000 (max. 500000)
+ 211 words of extra memory for PDF output out of 10000 (max. 10000000)
 
