@@ -86,7 +86,13 @@ pip install -r requirements.txt
    ```
    Outputs: `data/processed/threshold_sweep_xgb_misprice.csv`, printed best thresholds (F1 ≈ 0.50; precision ≈ 0.70).
 
-5) Diagnostics & backtesting notebook  
+5) EDA and training diagnostics (plots, learning curves, runtimes, metrics)  
+   ```bash
+   python -m src.eda_and_training_diagnostics
+   ```
+   Generates updated figures and CSV summaries in `figures/` and `data/processed/` for the report.
+
+6) Diagnostics & backtesting notebook  
    ```bash
    jupyter lab notebooks/model_diagnostics_and_backtest.ipynb
    # or
@@ -94,7 +100,7 @@ pip install -r requirements.txt
    ```
    “Run All” to regenerate diagnostics, SHAP, and PnL/backtest plots (saved to `figures/`).
 
-6) (Optional) Build the report PDF  
+7) (Optional) Build the report PDF  
    From `report/`:
    ```bash
    pdflatex final_report.tex

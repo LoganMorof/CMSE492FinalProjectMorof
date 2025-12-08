@@ -4,41 +4,37 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Background and Motivation}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Machine Learning Task and Objective}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Data Description}{2}{section.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Class distribution of mispriced vs non-mispriced snapshots (counts and proportions; only about 3.7\% are mispriced).}}{3}{figure.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Data Collection and Description}{2}{section.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Class distribution of mispriced versus non-mispriced snapshots; only about 3.7\% are labeled mispriced.}}{3}{figure.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Preprocessing}{3}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Models}{3}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Training Methodology}{4}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Training Pipeline}{4}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Model Comparison Table}{4}{subsection.6.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model architectures and training characteristics.}}{4}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Training/Inference Time}{4}{subsection.6.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Training and inference time comparison.}}{4}{table.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Metrics}{4}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}Results and Model Comparison}{5}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}ROC and PR Curves}{5}{subsection.8.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces ROC curve for optimized XGBoost model.}}{5}{figure.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Precision--Recall curve.}}{6}{figure.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Threshold Sweep}{6}{subsection.8.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Precision, recall, and F1 as functions of threshold.}}{6}{figure.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Confusion Matrices}{7}{subsection.8.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Confusion matrices at thresholds 0.50 (left) and 0.70 (right).}}{7}{figure.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {9}Model Interpretation}{7}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Feature Importances}{7}{subsection.9.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Top 20 XGBoost feature importances.}}{7}{figure.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}SHAP Analysis}{8}{subsection.9.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces SHAP summary plot. High volatility, order flow ratios, and timing features strongly influence predictions.}}{8}{figure.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {10}Backtesting Analysis}{8}{section.10}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Per-trade PnL distributions under three strategies.}}{9}{figure.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Total PnL and number of trades. Higher thresholds reduce trade count but improve precision estimates.}}{9}{figure.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Models and Training Methodology}{3}{section.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model characteristics.}}{4}{table.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Learning curve for logistic regression. Train and validation F1 hover around 0.2--0.25, reflecting limited capacity for nonlinear structure.}}{4}{figure.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Learning curve for random forest. Train F1 stays near 1.0; validation F1 climbs into the 0.3--0.4 range as sample size grows, showing high capacity and some overfitting risk.}}{5}{figure.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Learning curve for tuned XGBoost. Train F1 is near 1.0; validation F1 rises toward roughly 0.65 with more data, indicating strong capacity with manageable overfit at current sample sizes.}}{5}{figure.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Training and inference time (\texttt  {model\_runtime\_comparison.csv}).}}{6}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Metrics}{6}{section.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Held-out metrics (\texttt  {model\_metrics\_comparison.csv}).}}{6}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Results and Model Comparison}{6}{section.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces ROC curve for tuned XGBoost; ROC-AUC is about 0.94, meaning true mispricings generally score higher than normal cases.}}{7}{figure.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Precision--Recall curve; PR-AUC around 0.565 shows better-than-chance precision even as recall rises under heavy imbalance.}}{8}{figure.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Threshold sweep. Lower thresholds catch more mispricings with more false alarms; higher thresholds are more selective and precise.}}{8}{figure.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Confusion matrices for \(t=0.50\) (left) and \(t=0.70\) (right). Higher thresholds reduce false positives but miss more true mispricings.}}{9}{figure.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Calibration curve. Mid-range probabilities are conservative; a calibration step could refine them for trading.}}{10}{figure.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Cost-sensitive expected cost versus threshold. The preferred threshold shifts with the relative cost of misses versus false alarms.}}{11}{figure.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Model Interpretation}{11}{section.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Top XGBoost feature importances. Volatility, order-flow pressure, and time to resolution are key drivers.}}{12}{figure.11}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces SHAP summary. Wide spreads indicate strong influence; volatility and order-flow asymmetry tend to push predictions toward mispriced.}}{13}{figure.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces SHAP dependence for fifteen-minute sell volume. Sharp bursts of selling, especially near resolution, increase mispricing risk.}}{14}{figure.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Backtesting Analysis}{14}{section.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Per-trade PnL distributions. The 0.70 strategy trades less often but with a tighter, more favorable distribution; the 0.50 strategy trades more frequently with a broader spread.}}{15}{figure.14}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Total PnL and trade counts. The conservative threshold sacrifices volume for precision; the balanced threshold captures more opportunities with more noise.}}{15}{figure.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{15}{section.10}\protected@file@percent }
 \citation{*}
 \bibstyle{plain}
 \bibdata{references}
 \bibcite{polymarket_api}{1}
 \bibcite{polymarket_docs}{2}
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Cost-Sensitive Thresholding}{10}{subsection.10.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Cost-sensitive expected cost as a function of threshold.}}{10}{figure.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {11}Conclusion}{10}{section.11}\protected@file@percent }
 \bibcite{xgboost}{3}
 \bibcite{sklearn}{4}
 \bibcite{matplotlib}{5}
@@ -47,4 +43,4 @@
 \bibcite{codex}{8}
 \bibcite{pandas}{9}
 \bibcite{seaborn}{10}
-\gdef \@abspage@last{11}
+\gdef \@abspage@last{16}
